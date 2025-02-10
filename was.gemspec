@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-require_relative "lib/WAS/version"
+require_relative "lib/was/version"
 
 Gem::Specification.new do |spec|
-  spec.name    = "WAS"
+  spec.name    = "was"
   spec.version = WAS::VERSION
   spec.authors = ["Mark Connell"]
   spec.email   = ["github@markconnell.co.uk"]
 
   spec.summary     = "WAS: Weighted Average Score calculator"
-  spec.description = "TODO: Write a longer description or delete this line."
+  spec.description = "A simple gem/dsl for generating Weighted Average Score calculations."
   spec.homepage    = "https://github.com/mconnell/was"
   spec.required_ruby_version = ">= 2.6.0"
 
