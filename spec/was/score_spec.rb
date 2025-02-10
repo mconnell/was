@@ -58,6 +58,39 @@ RSpec.describe WAS::Score do
   end
 
   describe "ReportScore#calculate" do
+    context "scored 0/10 in practical, failed exam with 'F'" do
+      it "returns a calculated score of 0" do
+        expect(
+          ReportScore.new({
+            practical: 0,
+            exam: "F"
+          }).calculate
+        ).to eq(0)
+      end
+    end
+
+    context "passed practical with 10, failed exam with an 'F'" do
+      it "returns a calculated score of 250" do
+        expect(
+          ReportScore.new({
+            practical: 10,
+            exam: "F"
+          }).calculate
+        ).to eq(250)
+      end
+    end
+
+    context "Scored 8/10 in practical, passed exam with an 'C'" do
+      it "returns a calculated score of 575" do
+        expect(
+          ReportScore.new({
+            practical: 8,
+            exam: "C"
+          }).calculate
+        ).to eq(575)
+      end
+    end
+
     context "Failed practical, passed exam with an 'A'" do
       it "returns a calculated score of 750" do
         expect(
@@ -66,6 +99,17 @@ RSpec.describe WAS::Score do
             exam: "A"
           }).calculate
         ).to eq(750)
+      end
+    end
+
+    context "Scored 10/10 in practical, passed exam with an 'A'" do
+      it "returns a calculated score of 575" do
+        expect(
+          ReportScore.new({
+            practical: 10,
+            exam: "A"
+          }).calculate
+        ).to eq(1000)
       end
     end
   end
