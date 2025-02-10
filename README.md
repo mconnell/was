@@ -1,31 +1,29 @@
-# WAS
+# WAS: Weighted Average Score
 
-TODO: Delete this and the text below, and describe your gem
+A simple gem/dsl for generating Weighted Average Score calculations.
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/WAS`. To experiment with that code, run `bin/console` for an interactive prompt.
+## Example Usage
 
-## Installation
+```ruby
+  class ReportScore < WAS::Score
+    maximum_score 1000
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
+    with "ExamScore",      weight: 0.75
+    with "PracticalScore", weight: 0.25
+  end
 
-Install the gem and add to the application's Gemfile by executing:
+  class ExamScore < WAS::Score
+    def calculation
+      return 1    if input == "A"
+      return 0.75 if input == "B"
+      return 0.5  if input == "C"
+      0
+    end
+  end
 
-    $ bundle add UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
-
-If bundler is not being used to manage dependencies, install the gem by executing:
-
-    $ gem install UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
-
-## Usage
-
-TODO: Write usage instructions here
-
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/WAS.
+  class PracticalScore < WAS::Score
+    def calculation
+      input / 10.0
+    end
+  end
+```
