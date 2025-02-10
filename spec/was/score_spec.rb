@@ -10,14 +10,14 @@ RSpec.describe WAS::Score do
   #   with PracticalScore,  weight: 0.25
   # end
 
-  # class ExamScore < WAS::Score
-  #   def calculation
-  #     return 1    if value == "A"
-  #     return 0.75 if value == "B"
-  #     return 0.5  if value == "C"
-  #     0
-  #   end
-  # end
+  class ExamScore < WAS::Score
+    def calculation
+      return 1    if input == "A"
+      return 0.75 if input == "B"
+      return 0.5  if input == "C"
+      0
+    end
+  end
 
   class PracticalScore < WAS::Score
     def calculation
@@ -36,6 +36,24 @@ RSpec.describe WAS::Score do
 
     it "returns 1 if input value is 10" do
       expect(PracticalScore.new(10).calculate).to eq(1)
+    end
+  end
+
+  describe "ExamScore#calculate" do
+    it "returns 1 if input value is 'A'" do
+      expect(ExamScore.new('A').calculate).to eq(1)
+    end
+
+    it "returns 0.75 if input value is 'B'" do
+      expect(ExamScore.new('B').calculate).to eq(0.75)
+    end
+
+    it "returns 0.5 if input value is 'C'" do
+      expect(ExamScore.new('C').calculate).to eq(0.5)
+    end
+
+    it "returns 0 if input value is 'F'" do
+      expect(ExamScore.new('D').calculate).to eq(0)
     end
   end
 end
