@@ -3,12 +3,12 @@
 RSpec.describe WAS::Score do
   subject { described_class.new(nil) }
 
-  # class ReportScore < WAS::Score
-  #   maximum_score 1000
+  class ReportScore < WAS::Score
+    maximum_score 1000
 
-  #   with ExamScore,       weight: 0.75
-  #   with PracticalScore,  weight: 0.25
-  # end
+    with "ExamScore",      weight: 0.75
+    with "PracticalScore", weight: 0.25
+  end
 
   class ExamScore < WAS::Score
     def calculation
@@ -54,6 +54,19 @@ RSpec.describe WAS::Score do
 
     it "returns 0 if input value is 'F'" do
       expect(ExamScore.new('D').calculate).to eq(0)
+    end
+  end
+
+  describe "ReportScore#calculate" do
+    context "Failed practical, passed exam with an 'A'" do
+      it "returns a calculated score of 750" do
+        expect(
+          ReportScore.new({
+            practical: 0,
+            exam: "A"
+          }).calculate
+        ).to eq(750)
+      end
     end
   end
 end
