@@ -7,7 +7,7 @@ module WAS
     end
 
     def self.max_score
-      @maximum_score
+      @maximum_score || 1
     end
 
     def self.with(klass, weight: 0)

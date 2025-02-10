@@ -3,6 +3,11 @@
 RSpec.describe WAS::Score do
   subject { described_class.new(nil) }
 
+  class ComposedScore < WAS::Score
+    with "ExamScore",      weight: 0.75
+    with "PracticalScore", weight: 0.25
+  end
+
   class ReportScore < WAS::Score
     maximum_score 1000
 
@@ -110,6 +115,19 @@ RSpec.describe WAS::Score do
             exam: "A"
           }).calculate
         ).to eq(1000)
+      end
+    end
+  end
+
+  describe "ComposedScore#calculate" do
+    context "no 'maximum_score' defined. 5/10 in practical, passed exam with 'A'" do
+      it "returns a calculated score of 0" do
+        expect(
+          ComposedScore.new({
+            practical: 5,
+            exam: "A"
+          }).calculate
+        ).to eq(0.875)
       end
     end
   end
