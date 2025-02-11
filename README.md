@@ -79,3 +79,23 @@ ComposedScore.new({
 }).calculate
 #> 0.875
 ```
+
+### View all weights
+
+If you want to see all of the weights that are used to compose the score, there is a convenience method `.weights`:
+
+```ruby
+ReportScore.weights
+#> {exam: {weight: 0.75}, practical: {weight: 0.25}}
+
+# If you have a large score, you might want to format it if sharing with others
+require "json"
+puts JSON.pretty_generate(ReportScore.weights)
+#> {
+#>  "exam": {
+#>    "weight": 0.75
+#>  },
+#>  "practical": {
+#>    "weight": 0.25
+#>  }
+#> }

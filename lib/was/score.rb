@@ -18,6 +18,19 @@ module WAS
       @klasses ||= {}
     end
 
+    def self.weights
+      {}.tap do |hash|
+        klasses.each do |klass, weight|
+          hash[klass_name_symbol(klass)] = { weight: weight }
+          if Object.const_get(klass).klasses.length > 0
+            hash[klass_name_symbol(klass)].merge!(
+              with: Object.const_get(klass).weights
+            )
+          end
+        end
+      end
+    end
+
     def initialize(input)
       @input = input
     end
@@ -28,14 +41,14 @@ module WAS
 
     def calculation
       self.class.klasses.sum do |klass, weight|
-        score = Object.const_get(klass).new(input[klass_name_symbol(klass)]).calculate
+        score = Object.const_get(klass).new(input[self.class.klass_name_symbol(klass)]).calculate
         score * weight
       end * self.class.max_score
     end
 
     private
 
-    def klass_name_symbol(klass)
+    def self.klass_name_symbol(klass)
       klass[/(\w+)Score$/, 1].downcase.to_sym
     end
   end

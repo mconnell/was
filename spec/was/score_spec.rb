@@ -150,4 +150,20 @@ RSpec.describe WAS::Score do
       end
     end
   end
+
+  describe "WAS::Score#weights" do
+    it "emits a hash of scoring rules with their weights" do
+      expect(
+        NestedScore.weights
+      ).to eq({
+        composed: {
+          weight: 1.0,
+          with: {
+            practical: { weight: 0.25 },
+            exam: { weight: 0.75 }
+          }
+        }
+      })
+    end
+  end
 end
