@@ -49,7 +49,7 @@ Scenario:
 
 ```ruby
 ReportScore.new(
-  exam: "A"
+  exam: "A",
   practical: 10
 ).calculate
 #> 1000
