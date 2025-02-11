@@ -112,7 +112,7 @@ RSpec.describe WAS::Score do
     end
 
     context "Scored 10/10 in practical, passed exam with an 'A'" do
-      it "returns a calculated score of 575" do
+      it "returns a calculated score of 1000" do
         expect(
           ReportScore.new({
             practical: 10,
@@ -125,7 +125,7 @@ RSpec.describe WAS::Score do
 
   describe "ComposedScore#calculate" do
     context "no 'maximum_score' defined. 5/10 in practical, passed exam with 'A'" do
-      it "returns a calculated score of 0" do
+      it "returns a calculated score of 0.875" do
         expect(
           ComposedScore.new({
             practical: 5,
@@ -137,8 +137,8 @@ RSpec.describe WAS::Score do
   end
 
   describe "NestedScore#calculate" do
-    context "no 'maximum_score' defined. 5/10 in practical, passed exam with 'A'" do
-      it "returns a calculated score of 0" do
+    context "nested score results. no 'maximum_score' defined. 5/10 in practical, passed exam with 'A'" do
+      it "returns a calculated score of 0.875" do
         expect(
           NestedScore.new(
             composed: {
