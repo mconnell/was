@@ -20,6 +20,8 @@ Scenario:
 ### Define score classes
 
 ```ruby
+  require "was"
+
   class ReportScore < WAS::Score
     maximum_score 1000
 
@@ -58,3 +60,22 @@ ReportScore.new(
 ).calculate
 #> 250
 ````
+
+### Compose without generating a total score
+
+Omitting the `maximum_score` will return a composed percentage represented as a value between `0` and `1`.
+
+```ruby
+  class ComposedScore < WAS::Score
+    with "ExamScore",      weight: 0.75
+    with "PracticalScore", weight: 0.25
+  end
+```
+
+```ruby
+ComposedScore.new({
+  exam: "A",
+  practical: 5
+}).calculate
+#> 0.875
+```
