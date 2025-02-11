@@ -20,29 +20,29 @@ Scenario:
 ### Define score classes
 
 ```ruby
-  require "was"
+require "was"
 
-  class ReportScore < WAS::Score
-    maximum_score 1000
+class ReportScore < WAS::Score
+  maximum_score 1000
 
-    with "ExamScore",      weight: 0.75
-    with "PracticalScore", weight: 0.25
+  with "ExamScore",      weight: 0.75
+  with "PracticalScore", weight: 0.25
+end
+
+class ExamScore < WAS::Score
+  def calculation
+    return 1    if input == "A"
+    return 0.75 if input == "B"
+    return 0.5  if input == "C"
+    0
   end
+end
 
-  class ExamScore < WAS::Score
-    def calculation
-      return 1    if input == "A"
-      return 0.75 if input == "B"
-      return 0.5  if input == "C"
-      0
-    end
+class PracticalScore < WAS::Score
+  def calculation
+    input / 10.0
   end
-
-  class PracticalScore < WAS::Score
-    def calculation
-      input / 10.0
-    end
-  end
+end
 ```
 
 ### Generate a total score
@@ -66,14 +66,16 @@ ReportScore.new(
 Omitting the `maximum_score` will return a composed percentage represented as a value between `0` and `1`.
 
 ```ruby
-  class ComposedScore < WAS::Score
-    with "ExamScore",      weight: 0.75
-    with "PracticalScore", weight: 0.25
-  end
+# report_score.rb
+class ReportScore < WAS::Score
+  with "ExamScore",      weight: 0.75
+  with "PracticalScore", weight: 0.25
+end
 ```
 
 ```ruby
-ComposedScore.new({
+# usage
+ReportScore.new({
   exam: "A",
   practical: 5
 }).calculate
