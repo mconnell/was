@@ -45,11 +45,5 @@ module WAS
         score * scorer[:weight]
       end * self.class.max_score
     end
-
-    private
-
-    def self.klass_name_symbol(klass)
-      klass[/(\w+)Score$/, 1].downcase.to_sym
-    end
   end
 end
