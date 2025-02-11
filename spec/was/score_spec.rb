@@ -4,19 +4,19 @@ RSpec.describe WAS::Score do
   subject { described_class.new(nil) }
 
   class NestedScore < WAS::Score
-    with "ComposedScore", weight: 1.0
+    with :composed, class_name: "ComposedScore", weight: 1.0
   end
 
   class ComposedScore < WAS::Score
-    with "ExamScore",      weight: 0.75
-    with "PracticalScore", weight: 0.25
+    with :exam,     class_name: "ExamScore",      weight: 0.75
+    with :practial, class_name: "PracticalScore", weight: 0.25
   end
 
   class ReportScore < WAS::Score
     maximum_score 1000
 
-    with "ExamScore",      weight: 0.75
-    with "PracticalScore", weight: 0.25
+    with :exam,     class_name: "ExamScore",      weight: 0.75
+    with :practial, class_name: "PracticalScore", weight: 0.25
   end
 
   class ExamScore < WAS::Score

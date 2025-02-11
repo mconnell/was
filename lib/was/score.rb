@@ -10,8 +10,8 @@ module WAS
       @maximum_score || 1
     end
 
-    def self.with(klass, weight: 0)
-      klasses.merge!(klass => weight)
+    def self.with(name, class_name: klass, weight: 0)
+      klasses.merge!(class_name => weight)
     end
 
     def self.klasses
