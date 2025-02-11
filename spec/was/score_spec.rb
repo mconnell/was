@@ -9,14 +9,14 @@ RSpec.describe WAS::Score do
 
   class ComposedScore < WAS::Score
     with :exam,     class_name: "ExamScore",      weight: 0.75
-    with :practial, class_name: "PracticalScore", weight: 0.25
+    with :practical, class_name: "PracticalScore", weight: 0.25
   end
 
   class ReportScore < WAS::Score
     maximum_score 1000
 
     with :exam,     class_name: "ExamScore",      weight: 0.75
-    with :practial, class_name: "PracticalScore", weight: 0.25
+    with :practical, class_name: "PracticalScore", weight: 0.25
   end
 
   class ExamScore < WAS::Score

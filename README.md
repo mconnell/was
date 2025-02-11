@@ -25,8 +25,8 @@ require "was"
 class ReportScore < WAS::Score
   maximum_score 1000
 
-  with "ExamScore",      weight: 0.75
-  with "PracticalScore", weight: 0.25
+  with :exam,     "ExamScore",      weight: 0.75
+  with :practical "PracticalScore", weight: 0.25
 end
 
 class ExamScore < WAS::Score
@@ -68,8 +68,8 @@ Omitting the `maximum_score` will return a composed percentage represented as a 
 ```ruby
 # report_score.rb
 class ReportScore < WAS::Score
-  with "ExamScore",      weight: 0.75
-  with "PracticalScore", weight: 0.25
+  with :exam,     "ExamScore",      weight: 0.75
+  with :practical "PracticalScore", weight: 0.25
 end
 ```
 

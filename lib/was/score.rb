@@ -11,7 +11,7 @@ module WAS
     end
 
     def self.with(name, class_name: klass, weight: 0)
-      scorers.merge!(class_name => weight)
+      scorers.merge!(name => { class_name: class_name, weight: weight })
     end
 
     def self.scorers
@@ -20,11 +20,11 @@ module WAS
 
     def self.weights
       {}.tap do |hash|
-        scorers.each do |klass, weight|
-          hash[klass_name_symbol(klass)] = { weight: weight }
-          if Object.const_get(klass).scorers.length > 0
-            hash[klass_name_symbol(klass)].merge!(
-              with: Object.const_get(klass).weights
+        scorers.each do |name, scorer|
+          hash[name] = { weight: scorer[:weight] }
+          if Object.const_get(scorer[:class_name]).scorers.length > 0
+            hash[name].merge!(
+              with: Object.const_get(scorer[:class_name]).weights
             )
           end
         end
@@ -40,9 +40,9 @@ module WAS
     end
 
     def calculation
-      self.class.scorers.sum do |klass, weight|
-        score = Object.const_get(klass).new(input[self.class.klass_name_symbol(klass)]).calculate
-        score * weight
+      self.class.scorers.sum do |name, scorer|
+        score = Object.const_get(scorer[:class_name]).new(input[name.to_sym]).calculate
+        score * scorer[:weight]
       end * self.class.max_score
     end
 
