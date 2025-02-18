@@ -41,10 +41,6 @@ module WAS
     end
 
     def calculate
-      calculation
-    end
-
-    def calculation
       if contexts?
         context_score_calculation
       else
