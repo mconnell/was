@@ -20,37 +20,26 @@ RSpec.describe WAS::Score do
   end
 
   class ExamScore < WAS::Score
-    def calculation
-      return 1    if input == "A"
-      return 0.75 if input == "B"
-      return 0.5  if input == "C"
+    context :grade_a, score: 1 do |input|
+      input == "A"
+    end
+
+    context :grade_b, score: 0.75 do |input|
+      input == "B"
+    end
+
+    context :grade_c, score: 0.5 do |input|
+      input == "C"
+    end
+
+    context :flunk do
       0
     end
   end
 
   class PracticalScore < WAS::Score
-    def calculation
+    context :score do |input|
       input / 10.0
-    end
-  end
-
-  class ContextScore < WAS::Score
-    context :fixed_score, score: 0.5 do |input|
-      input == "FIXED"
-    end
-
-    context :variable_score do |input|
-      input / 10.0
-    end
-  end
-
-  describe "ContextScore" do
-    it "returns a fixed score 0.5 if input is 'FIXED'" do
-      expect(ContextScore.new("FIXED").calculate).to eq(0.5)
-    end
-
-    it "returns a variable score depending on the input" do
-      expect(ContextScore.new(9).calculate).to eq(0.9)
     end
   end
 
