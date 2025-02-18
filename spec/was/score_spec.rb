@@ -34,6 +34,26 @@ RSpec.describe WAS::Score do
     end
   end
 
+  class ContextScore < WAS::Score
+    context :fixed_score, score: 0.5 do |input|
+      input == "FIXED"
+    end
+
+    context :variable_score do |input|
+      input / 10.0
+    end
+  end
+
+  describe "ContextScore" do
+    it "returns a fixed score 0.5 if input is 'FIXED'" do
+      expect(ContextScore.new("FIXED").calculate).to eq(0.5)
+    end
+
+    it "returns a variable score depending on the input" do
+      expect(ContextScore.new(9).calculate).to eq(0.9)
+    end
+  end
+
   describe "PracticalScore#calculate" do
     it "returns 0 if input value is 0" do
       expect(PracticalScore.new(0).calculate).to eq(0)

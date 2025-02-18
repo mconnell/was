@@ -31,6 +31,11 @@ module WAS
       end
     end
 
+    def self.context(name, score: nil, &block)
+      @contexts ||= []
+      @contexts.push({ name: name, score: score, code: block })
+    end
+
     def initialize(input)
       @input = input
     end
@@ -40,6 +45,28 @@ module WAS
     end
 
     def calculation
+      if contexts?
+        context_score_calculation
+      else
+        nested_score_calcuation
+      end
+    end
+
+    private
+
+    def contexts?
+      !!self.class.instance_variable_get("@contexts")
+    end
+
+    def context_score_calculation
+      self.class.instance_variable_get("@contexts").each do |context|
+        output = context[:code].call(input)
+        next unless output
+        return context[:score] || output
+      end
+    end
+
+    def nested_score_calcuation
       self.class.scorers.sum do |name, scorer|
         score = Object.const_get(scorer[:class_name]).new(input[name.to_sym]).calculate
         score * scorer[:weight]
