@@ -50,8 +50,11 @@ module WAS
         {score: calc}.merge(result)
       end
 
-      r = transform_scores_relative_to_max_score(tree)
-      option == :tree ? r : r[:score]
+      if option == :tree
+        transform_scores_relative_to_max_score(tree)
+      else
+        tree[:score]
+      end
     end
 
     def calculation(option = nil)
