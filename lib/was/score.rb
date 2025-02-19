@@ -49,7 +49,7 @@ module WAS
         if calc.is_a?(Hash)
           calc.merge(result)
         else
-          result.merge(score: calc)
+          {score: calc}.merge(result)
         end
       else
         calculation
