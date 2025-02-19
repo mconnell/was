@@ -40,11 +40,27 @@ module WAS
       @input = input
     end
 
-    def calculate
+    def calculate(option = nil)
+      if option == :tree
+        calc = calculation(:tree)
+
+        result = { max: self.class.max_score }
+
+        if calc.is_a?(Hash)
+          calc.merge(result)
+        else
+          result.merge(score: calc)
+        end
+      else
+        calculation
+      end
+    end
+
+    def calculation(option = nil)
       if contexts?
         context_score_calculation
       else
-        nested_score_calcuation
+        nested_score_calcuation(option)
       end
     end
 
@@ -62,11 +78,24 @@ module WAS
       end
     end
 
-    def nested_score_calcuation
-      self.class.scorers.sum do |name, scorer|
+    def nested_score_calcuation(option)
+      result = self.class.scorers.sum do |name, scorer|
         score = Object.const_get(scorer[:class_name]).new(input[name.to_sym]).calculate
         score * scorer[:weight]
       end * self.class.max_score
+
+      if option == :tree
+        with = {}
+
+        self.class.scorers.each do |name, scorer|
+          with[name] = Object.const_get(scorer[:class_name]).new(input[name.to_sym]).calculate(:tree)
+          with[name][:weight] = scorer[:weight]
+        end
+
+        { score: result, with: with }
+      else
+        result
+      end
     end
   end
 end

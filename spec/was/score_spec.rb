@@ -143,6 +143,32 @@ RSpec.describe WAS::Score do
         ).to eq(0.875)
       end
     end
+
+    context ":tree option supplied" do
+      it "returns a calculated score of 1 with breakdown" do
+        expect(
+          ComposedScore.new({
+            practical: 8,
+            exam: "C"
+          }).calculate(:tree)
+        ).to eq({
+          score: 0.575,
+          max: 1,
+          with: {
+            practical: {
+              score: 0.8,
+              max: 1,
+              weight: 0.25
+            },
+            exam: {
+              score: 0.5,
+              max: 1,
+              weight: 0.75
+            }
+          }
+        })
+      end
+    end
   end
 
   describe "NestedScore#calculate" do
