@@ -43,6 +43,86 @@ RSpec.describe WAS::Score do
     end
   end
 
+  class ComplexNestedScore < WAS::Score
+    maximum_score 1000
+
+    with :theory, class_name: "TheoryScore", weight: 0.5
+    with :composed, class_name: "ComposedScore", weight: 0.5
+  end
+
+  class TheoryScore < WAS::Score
+    context :score do |input|
+      input / 10.0
+    end
+  end
+
+
+  describe "ComplexNestedScore#calculate" do
+    context "no option supplied" do
+      it "returns just the score" do
+        expect(
+          ComplexNestedScore.new({
+            theory: 8,
+            composed: {
+              practical: 5,
+              exam: "C"
+            }
+          }).calculate).to eq(650)
+      end
+    end
+
+    context ":tree option supplied" do
+      let(:tree) do
+        ComplexNestedScore.new({
+          theory: 8,
+          composed: {
+            practical: 5,
+            exam: "C"
+          }
+        }).calculate(:tree)
+      end
+
+      it "has a total score of 650" do
+        expect(tree[:score]).to eq(650)
+      end
+
+      it "has a maximum score of 1000" do
+        expect(tree[:max]).to eq(1000)
+      end
+
+      it "includes a breakdown of the theory score" do
+        expect(tree[:with][:theory]).to(
+          eq({ score: 400, max: 500, weight: 0.5 })
+        )
+      end
+
+      describe "composed score" do
+        it "includes a composed overall score" do
+          expect(tree[:with][:composed][:score]).to eq(250)
+        end
+
+        it "includes a composed max value" do
+          expect(tree[:with][:composed][:max]).to eq(500)
+        end
+
+        it "includes a composed weight" do
+          expect(tree[:with][:composed][:weight]).to eq(0.5)
+        end
+
+        it "includes a breakdown of the 'practical' score" do
+          expect(tree[:with][:composed][:with][:practical]).to(
+            eq({ score: 100, max: 125, weight: 0.25 })
+          )
+        end
+        it "includes a breakdown of the 'exam' score" do
+          expect(tree[:with][:composed][:with][:exam]).to(
+            eq({ score: 187.5, max: 375, weight: 0.75 })
+          )
+        end
+      end
+    end
+  end
+
   describe "PracticalScore#calculate" do
     it "returns 0 if input value is 0" do
       expect(PracticalScore.new(0).calculate).to eq(0)
