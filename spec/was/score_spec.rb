@@ -109,6 +109,32 @@ RSpec.describe WAS::Score do
       end
     end
 
+    context ":tree option supplied" do
+      it "returns a calculated score of 575 with breakdown" do
+        expect(
+          ReportScore.new({
+            practical: 8,
+            exam: "C"
+          }).calculate(:tree)
+        ).to eq({
+          score: 575.0,
+          max: 1000,
+          with: {
+            practical: {
+              score: 200,
+              max: 250,
+              weight: 0.25
+            },
+            exam: {
+              score: 375,
+              max: 750,
+              weight: 0.75
+            }
+          }
+        })
+      end
+    end
+
     context "Failed practical, passed exam with an 'A'" do
       it "returns a calculated score of 750" do
         expect(

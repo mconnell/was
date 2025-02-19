@@ -45,12 +45,13 @@ module WAS
         calc = calculation(:tree)
 
         result = { max: self.class.max_score }
-
-        if calc.is_a?(Hash)
+        tree = if calc.is_a?(Hash)
           calc.merge(result)
         else
           {score: calc}.merge(result)
         end
+
+        transform_scores_relative_to_max_score(tree)
       else
         calculation
       end
@@ -65,6 +66,19 @@ module WAS
     end
 
     private
+
+    def transform_scores_relative_to_max_score(tree)
+      return tree if self.class.max_score == 1
+
+      tree.each do |key, value|
+        next unless key == :with
+
+        value.each do |scorer_name, values|
+          values[:max] = self.class.max_score * values[:weight]
+          values[:score] = values[:score] * values[:max]
+        end
+      end
+    end
 
     def contexts?
       !!self.class.instance_variable_get("@contexts")
