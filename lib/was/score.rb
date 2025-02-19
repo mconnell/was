@@ -41,20 +41,17 @@ module WAS
     end
 
     def calculate(option = nil)
-      if option == :tree
-        calc = calculation(:tree)
+      calc = calculation(:tree)
 
-        result = { max: self.class.max_score }
-        tree = if calc.is_a?(Hash)
-          calc.merge(result)
-        else
-          {score: calc}.merge(result)
-        end
-
-        transform_scores_relative_to_max_score(tree)
+      result = { max: self.class.max_score }
+      tree = if calc.is_a?(Hash)
+        calc.merge(result)
       else
-        calculation
+        {score: calc}.merge(result)
       end
+
+      r = transform_scores_relative_to_max_score(tree)
+      option == :tree ? r : r[:score]
     end
 
     def calculation(option = nil)
