@@ -111,12 +111,18 @@ RSpec.describe WAS::Score do
 
         it "includes a breakdown of the 'practical' score" do
           expect(tree[:with][:composed][:with][:practical]).to(
-            eq({ score: 100, max: 125, weight: 0.25 })
+            eq({ score: 62.5, max: 125, weight: 0.25 })
           )
         end
         it "includes a breakdown of the 'exam' score" do
           expect(tree[:with][:composed][:with][:exam]).to(
             eq({ score: 187.5, max: 375, weight: 0.75 })
+          )
+        end
+
+        it "composed tree max scores roll up to the composed max score" do
+          expect(tree[:with][:composed][:max]).to eq(
+            tree[:with][:composed][:with][:practical][:max] + tree[:with][:composed][:with][:exam][:max]
           )
         end
       end

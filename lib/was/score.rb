@@ -67,15 +67,20 @@ module WAS
 
     private
 
-    def transform_scores_relative_to_max_score(tree)
+    def transform_scores_relative_to_max_score(tree, max_score = nil)
+      max_score = max_score || self.class.max_score
       return tree if self.class.max_score == 1
 
       tree.each do |key, value|
-        next unless key == :with
+        next if key != :with
 
-        value.each do |scorer_name, values|
-          values[:max] = self.class.max_score * values[:weight]
-          values[:score] = values[:score] * values[:max]
+        value.each do |scorer, branch|
+          branch[:max] = branch[:max] * max_score * branch[:weight]
+          branch[:score] = branch[:score] * branch[:max]
+        end
+
+        value.transform_values! do |nested_tree|
+          transform_scores_relative_to_max_score(nested_tree, nested_tree[:max])
         end
       end
     end
