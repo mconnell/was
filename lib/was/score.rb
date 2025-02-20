@@ -47,7 +47,7 @@ module WAS
       tree = if calc.is_a?(Hash)
         calc.merge(result)
       else
-        {score: calc}.merge(result)
+        { score: calc }.merge(result)
       end
 
       if option == :tree
