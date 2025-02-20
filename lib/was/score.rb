@@ -96,7 +96,7 @@ module WAS
     def context_score_calculation
       self.class.instance_variable_get("@contexts").each do |context|
         output = context[:code].call(input)
-        next unless output
+        next if !output
         return context[:score] || output
       end
     end
