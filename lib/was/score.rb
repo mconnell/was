@@ -102,14 +102,15 @@ module WAS
     end
 
     def nested_score_calcuation(option)
-      sum = scorers_sum
-      return sum if option != :tree
-
-      { score: sum, with: with_attribute }
+      if option == :tree
+        { score: sum, with: with_attribute }
+      else
+        sum
+      end
     end
 
-    def scorers_sum
-      self.class.scorers.sum do |name, scorer|
+    def sum
+      @sum ||= self.class.scorers.sum do |name, scorer|
         score = Object.const_get(scorer[:class_name]).new(input[name.to_sym]).calculate
         score * scorer[:weight]
       end * self.class.max_score
