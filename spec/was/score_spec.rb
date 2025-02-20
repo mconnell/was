@@ -125,6 +125,14 @@ RSpec.describe WAS::Score do
             tree[:with][:composed][:with][:practical][:max] + tree[:with][:composed][:with][:exam][:max]
           )
         end
+
+        it "composed tree scores roll up to the composed score" do
+          expect(tree[:score]).to eq(
+            tree[:with][:theory][:score] +
+            tree[:with][:composed][:with][:practical][:score] +
+            tree[:with][:composed][:with][:exam][:score]
+          )
+        end
       end
     end
   end
