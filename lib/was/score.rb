@@ -75,14 +75,18 @@ module WAS
         next if key != :with
 
         value.each do |scorer, branch|
-          branch[:max] = branch[:max] * max_score * branch[:weight]
-          branch[:score] = branch[:score] * branch[:max]
+          adjust_branch_score_and_max(branch, max_score)
         end
 
         value.transform_values! do |nested_tree|
           transform_scores_relative_to_max_score(nested_tree, nested_tree[:max])
         end
       end
+    end
+
+    def adjust_branch_score_and_max(branch, max_score)
+      branch[:max]   = branch[:max] * max_score * branch[:weight]
+      branch[:score] = branch[:score] * branch[:max]
     end
 
     def contexts?
@@ -98,22 +102,25 @@ module WAS
     end
 
     def nested_score_calcuation(option)
-      result = self.class.scorers.sum do |name, scorer|
+      sum = scorers_sum
+      return sum if option != :tree
+
+      { score: sum, with: with_attribute }
+    end
+
+    def scorers_sum
+      self.class.scorers.sum do |name, scorer|
         score = Object.const_get(scorer[:class_name]).new(input[name.to_sym]).calculate
         score * scorer[:weight]
       end * self.class.max_score
+    end
 
-      if option == :tree
-        with = {}
-
+    def with_attribute
+      {}.tap do |with|
         self.class.scorers.each do |name, scorer|
           with[name] = Object.const_get(scorer[:class_name]).new(input[name.to_sym]).calculate(:tree)
           with[name][:weight] = scorer[:weight]
         end
-
-        { score: result, with: with }
-      else
-        result
       end
     end
   end
