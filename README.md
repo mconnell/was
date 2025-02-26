@@ -100,17 +100,17 @@ ReportScore.new({
 {
   :max => 1000,
   :score => 875.0,
-    :with => {
-      :exam => {
-        :score => 750.0,
-        :max => 750.0,
-        :weight => 0.75
-      },
-   :practical => {
-     :score => 125.0,
-     :max => 250.0,
-     :weight => 0.25
-   }
+  :with => {
+    :exam => {
+      :score => 750.0,
+      :max => 750.0,
+      :weight => 0.75
+    },
+    :practical => {
+      :score => 125.0,
+      :max => 250.0,
+      :weight => 0.25
+    }
   },
 }
 ```
