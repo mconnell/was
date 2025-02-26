@@ -4,21 +4,27 @@ module WAS
       self.dup.tap do |tree|
         return tree if tree[:with].nil?
 
-        if order_key == :deduction
-          tree[:with] = sorted_with_by(order_key, tree).to_h
-        else
-          tree[:with] = sorted_with_by(order_key, tree).reverse.to_h
-        end
+        sort_with_by!(order_key, tree)
       end
     end
 
     private
 
-    def sorted_with_by(order_key, tree)
+    def sort_with_by!(order_key, tree)
       return tree if tree[:with].nil?
 
-      tree[:with].sort_by do |_, subtree|
+      tree[:with].each do |scorer, branch|
+        sort_with_by!(order_key, branch)
+      end
+
+      array = tree[:with].sort_by do |_, subtree|
         subtree[order_key]
+      end
+
+      tree[:with] = if order_key == :deduction
+        array.to_h
+      else
+        array.reverse.to_h
       end
     end
   end
