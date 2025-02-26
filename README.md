@@ -91,33 +91,80 @@ ReportScore.new({
 #> 0.875
 ```
 
+### Working with a score tree
+
+For more complex scenarios, we might need to know more about how the score was composed.
+
+Using the example `ReportScore`, `ExamScore`, and `PracticalScore` classes as
+an example, we can generate a tree of scores:
+
 ```ruby
-ReportScore.new({
+tree = ReportScore.new({
   exam: "A",
   practical: 5
 }).calculate(:tree)
 
+#> tree
 {
-  :max => 1000,
-  :score => 875.0,
-  :with => {
-    :exam => {
-      :score => 750.0,
-      :max => 750.0,
-      :weight => 0.75
+  score: 875.0,
+  max: 1000,
+  deduction: -125.0,
+  with: {
+    exam: {
+      score: 750.0,
+      max: 750.0,
+      deduction: 0.0,
+      weight: 0.75
     },
-    :practical => {
-      :score => 125.0,
-      :max => 250.0,
-      :weight => 0.25
+    practical: {
+      score: 125.0,
+      max: 250.0,
+      deduction: -125.0,
+      weight: 0.25
     }
-  },
+  }
 }
 ```
 
+This result is a `WAS::Tree` object. Basically a `Hash` with some extra
+added to it.
+
+#### Ordering by attribute
+
+For each of the key attributes `:score`, `:max`, `:weight`, and
+`:deduction`, we can order our tree interally by that key:
+
+```ruby
+#> tree.order(:deduction)
+{
+  score: 875.0,
+  max: 1000,
+  deduction: -125.0
+  with: {
+    practical: {
+      score: 125.0,
+      max: 250.0,
+      deduction: -125.0,
+      weight: 0.25
+    },
+    exam: {
+      score: 750.0,
+      max: 750.0,
+      deduction: 0.0,
+      weight: 0.75
+    }
+  }
+}
+```
+
+For `:deduction`, results adjacent to each other are ordered by the
+_most negative_. For all other options, the values are ordered largest
+value first.
+
 ### View all weights
 
-If you want to see all of the weights that are used to compose the score, there is a convenience method `.weights`:
+If you want to see all of the weights that are used to compose the score,
+there is a convenience method `.weights`:
 
 ```ruby
 ReportScore.weights
