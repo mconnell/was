@@ -17,6 +17,12 @@ Scenario:
   * 4 out of 10 is 40%
 * The person is given a final score out of 1000.
 
+### Install the RubyGem
+
+```bash
+gem install was
+```
+
 ### Define score classes
 
 ```ruby
