@@ -45,9 +45,9 @@ module WAS
 
       calc = calculation(:tree)
       tree = if calc.is_a?(Hash)
-        calc.merge({ max: self.class.max_score, deduction: (calc[:score] - self.class.max_score).round(8) })
+        calc.merge(additional_score_attributes(calc[:score]))
       else
-        { score: calc }.merge({ max: self.class.max_score, deduction: (calc - self.class.max_score).round(8) })
+        { score: calc }.merge(additional_score_attributes(calc))
       end
 
       transform_scores_relative_to_max_score(tree)
@@ -62,6 +62,13 @@ module WAS
     end
 
     private
+
+    def additional_score_attributes(score_value)
+      {
+        max: self.class.max_score,
+        deduction: (score_value - self.class.max_score).round(8)
+      }
+    end
 
     def transform_scores_relative_to_max_score(tree, max_score = nil)
       max_score = max_score || self.class.max_score
