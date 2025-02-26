@@ -8,14 +8,14 @@ RSpec.describe WAS::Score do
   end
 
   class ComposedScore < WAS::Score
-    with :exam,     class_name: "ExamScore",      weight: 0.75
+    with :exam,      class_name: "ExamScore",      weight: 0.75
     with :practical, class_name: "PracticalScore", weight: 0.25
   end
 
   class ReportScore < WAS::Score
     maximum_score 1000
 
-    with :exam,     class_name: "ExamScore",      weight: 0.75
+    with :exam,      class_name: "ExamScore",      weight: 0.75
     with :practical, class_name: "PracticalScore", weight: 0.25
   end
 
@@ -92,7 +92,7 @@ RSpec.describe WAS::Score do
 
       it "includes a breakdown of the theory score" do
         expect(tree[:with][:theory]).to(
-          eq({ score: 400, max: 500, weight: 0.5 })
+          eq({ score: 400, max: 500, deduction: -100, weight: 0.5 })
         )
       end
 
@@ -111,12 +111,12 @@ RSpec.describe WAS::Score do
 
         it "includes a breakdown of the 'practical' score" do
           expect(tree[:with][:composed][:with][:practical]).to(
-            eq({ score: 62.5, max: 125, weight: 0.25 })
+            eq({ score: 62.5, max: 125, deduction: -62.5, weight: 0.25 })
           )
         end
         it "includes a breakdown of the 'exam' score" do
           expect(tree[:with][:composed][:with][:exam]).to(
-            eq({ score: 187.5, max: 375, weight: 0.75 })
+            eq({ score: 187.5, max: 375, deduction: -187.5, weight: 0.75 })
           )
         end
 
@@ -213,15 +213,18 @@ RSpec.describe WAS::Score do
         ).to eq({
           score: 575.0,
           max: 1000,
+          deduction: -425,
           with: {
             practical: {
               score: 200,
               max: 250,
+              deduction: -50,
               weight: 0.25
             },
             exam: {
-              score: 375,
               max: 750,
+              score: 375,
+              deduction: -375,
               weight: 0.75
             }
           }
@@ -274,15 +277,18 @@ RSpec.describe WAS::Score do
         ).to eq({
           score: 0.575,
           max: 1,
+          deduction: -0.425,
           with: {
             practical: {
               score: 0.8,
               max: 1,
+              deduction: -0.2,
               weight: 0.25
             },
             exam: {
               score: 0.5,
               max: 1,
+              deduction: -0.5,
               weight: 0.75
             }
           }

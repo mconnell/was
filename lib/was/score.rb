@@ -45,9 +45,9 @@ module WAS
 
       calc = calculation(:tree)
       tree = if calc.is_a?(Hash)
-        calc.merge({ max: self.class.max_score })
+        calc.merge({ max: self.class.max_score, deduction: (calc[:score] - self.class.max_score).round(8) })
       else
-        { score: calc }.merge({ max: self.class.max_score })
+        { score: calc }.merge({ max: self.class.max_score, deduction: (calc - self.class.max_score).round(8) })
       end
 
       transform_scores_relative_to_max_score(tree)
@@ -83,6 +83,7 @@ module WAS
     def adjust_branch_score_and_max(branch, max_score)
       branch[:max]   = branch[:max] * max_score * branch[:weight]
       branch[:score] = branch[:score] * branch[:max]
+      branch[:deduction] = branch[:score] - branch[:max]
     end
 
     def contexts?
