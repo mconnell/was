@@ -15,7 +15,7 @@ module WAS
     end
 
     def self.scorers
-      @scorers ||= WAS::Tree.new
+      @scorers ||= {}
     end
 
     def self.weights
@@ -47,7 +47,7 @@ module WAS
       tree = if calc.is_a?(Hash)
         calc.merge(additional_score_attributes(calc[:score]))
       else
-        WAS::Tree.new.tap do |t|
+        {}.tap do |t|
           t.merge!(score: calc)
           t.merge!(additional_score_attributes(calc))
         end
@@ -127,7 +127,7 @@ module WAS
     end
 
     def with_attribute
-      WAS::Tree.new.tap do |with|
+      {}.tap do |with|
         self.class.scorers.each do |name, scorer|
           with[name] = Object.const_get(scorer[:class_name]).new(input[name.to_sym]).calculate(:tree)
           with[name][:weight] = scorer[:weight]
