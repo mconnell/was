@@ -15,7 +15,7 @@ module WAS
     end
 
     def self.scorers
-      @scorers ||= {}
+      @scorers ||= WAS::Tree.new
     end
 
     def self.weights
@@ -47,7 +47,10 @@ module WAS
       tree = if calc.is_a?(Hash)
         calc.merge(additional_score_attributes(calc[:score]))
       else
-        { score: calc }.merge(additional_score_attributes(calc))
+        WAS::Tree.new.tap do |t|
+          t.merge!(score: calc)
+          t.merge!(additional_score_attributes(calc))
+        end
       end
 
       transform_scores_relative_to_max_score(tree)
@@ -107,7 +110,10 @@ module WAS
 
     def nested_score_calcuation(option)
       if option == :tree
-        { score: sum, with: with_attribute }
+        WAS::Tree.new.tap do |t|
+          t[:score] = sum
+          t[:with]  = with_attribute
+        end
       else
         sum
       end
@@ -121,7 +127,7 @@ module WAS
     end
 
     def with_attribute
-      {}.tap do |with|
+      WAS::Tree.new.tap do |with|
         self.class.scorers.each do |name, scorer|
           with[name] = Object.const_get(scorer[:class_name]).new(input[name.to_sym]).calculate(:tree)
           with[name][:weight] = scorer[:weight]

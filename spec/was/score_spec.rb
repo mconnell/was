@@ -204,6 +204,15 @@ RSpec.describe WAS::Score do
     end
 
     context ":tree option supplied" do
+      it "returns a 'WAS::Tree' instance" do
+        expect(
+          ReportScore.new({
+            practical: 8,
+            exam: "C"
+          }).calculate(:tree).class
+        ).to eq(WAS::Tree)
+      end
+
       it "returns a calculated score of 575 with breakdown" do
         expect(
           ReportScore.new({

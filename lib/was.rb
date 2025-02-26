@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "was/version"
+require_relative "was/tree"
 require_relative "was/score"
 
 module WAS
