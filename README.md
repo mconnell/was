@@ -14,8 +14,8 @@ Scenario:
   * 'C' is 50%
   * 'D' is 0%
 * The practical is a simple mark out of 10.
-  * 4 out of 10 is 40% 
-* The person is given a final score out of 1000.  
+  * 4 out of 10 is 40%
+* The person is given a final score out of 1000.
 
 ### Define score classes
 
@@ -25,8 +25,8 @@ require "was"
 class ReportScore < WAS::Score
   maximum_score 1000
 
-  with :exam,     class_name: "ExamScore",      weight: 0.75
-  with :practical class_name: "PracticalScore", weight: 0.25
+  with :exam,      class_name: "ExamScore",      weight: 0.75
+  with :practical, class_name: "PracticalScore", weight: 0.25
 end
 
 class ExamScore < WAS::Score
@@ -77,8 +77,8 @@ Omitting the `maximum_score` will return a composed percentage represented as a 
 ```ruby
 # report_score.rb
 class ReportScore < WAS::Score
-  with :exam,     class_name: "ExamScore",      weight: 0.75
-  with :practical class_name: "PracticalScore", weight: 0.25
+  with :exam,      class_name: "ExamScore",      weight: 0.75
+  with :practical, class_name: "PracticalScore", weight: 0.25
 end
 ```
 
@@ -89,6 +89,30 @@ ReportScore.new({
   practical: 5
 }).calculate
 #> 0.875
+```
+
+```ruby
+ReportScore.new({
+  exam: "A",
+  practical: 5
+}).calculate(:tree)
+
+{
+  :max => 1000,
+  :score => 875.0,
+    :with => {
+      :exam => {
+        :score => 750.0,
+        :max => 750.0,
+        :weight => 0.75
+      },
+   :practical => {
+     :score => 125.0,
+     :max => 250.0,
+     :weight => 0.25
+   }
+  },
+}
 ```
 
 ### View all weights
