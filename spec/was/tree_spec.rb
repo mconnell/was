@@ -91,6 +91,16 @@ RSpec.describe WAS::Tree do
           eq([:medium, :smaller])
         )
       end
+
+      it "retains the 'Tree' classes" do
+        result = report_tree.order(:max)
+
+        expect(result.class).to eq(WAS::Tree)
+        expect(result[:with][:smaller].class).to eq(WAS::Tree)
+        expect(result[:with][:bigger].class).to eq(WAS::Tree)
+        expect(result[:with][:bigger][:with][:smaller].class).to eq(WAS::Tree)
+        expect(result[:with][:bigger][:with][:medium].class).to eq(WAS::Tree)
+      end
     end
   end
 end
