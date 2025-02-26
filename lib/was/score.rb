@@ -71,7 +71,7 @@ module WAS
         next if key != :with
 
         value.each do |scorer, branch|
-          adjust_branch_score_and_max(branch, max_score)
+          adjust_values_relative_to_max_score(branch, max_score)
         end
 
         value.transform_values! do |nested_tree|
@@ -80,8 +80,8 @@ module WAS
       end
     end
 
-    def adjust_branch_score_and_max(branch, max_score)
-      branch[:max]   = branch[:max] * max_score * branch[:weight]
+    def adjust_values_relative_to_max_score(branch, max_score)
+      branch[:max] = branch[:max] * max_score * branch[:weight]
       branch[:score] = branch[:score] * branch[:max]
       branch[:deduction] = branch[:score] - branch[:max]
     end
